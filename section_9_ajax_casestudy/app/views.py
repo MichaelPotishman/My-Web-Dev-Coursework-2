@@ -50,7 +50,7 @@ def feed():
     for post in user_posts:
         post_id = post.post_id
         if post.post_id not in posts_dict:
-            posts_dict[post_id] = {'content' : post.content, 'username': post.user.username, 'hashtags': [], 'upvotes': post.upvotes}
+            posts_dict[post_id] = {'content' : post.content, 'username': post.user.username, 'hashtags': [], 'upvotes': post.upvotes, 'user_id': post.user_id}
         for hashtag in post.hashtags:
             posts_dict[post_id]['hashtags'].append(hashtag.name)
             

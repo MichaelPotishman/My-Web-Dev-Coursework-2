@@ -36,9 +36,12 @@
                                 <i class="far fa-thumbs-up" id="up"></i><span id="sup"> {{ post_data.upvotes }}</span></a>
                             {% endif %}
                     </div>
+                    {% if post_data.user_id == current_user.id %}
                     <div class="right-container">
                         
+                        <p>DELETE</p>
                     </div>
+                    {% endif %}
                 </div>
             {% endfor %}
             <!-- Get the user_id in posts table, then use this to get the username from Users table with that user_id-->
