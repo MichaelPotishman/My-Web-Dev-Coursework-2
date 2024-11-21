@@ -91,15 +91,24 @@ body{
 
 
 /* FEED.html */
-.new-main{
-    position: relative;
-    display: flex;
-    background-color: red;
-    margin-top: 20px;
-    height: 500px;
+.new-main {
     border-radius: 25px;
+    margin-top: 50px;
+    display: grid;
+    grid-template-columns: 1fr;  /* Ensures only one column */
+    width: 100%;
+    background-color: red;
     padding: 20px;
 }
+
+.post-container {
+    padding: 10px;
+    border-radius: 12.5px;
+    width: 100%;  /* Ensures the container takes up the full width */
+    background-color: purple;
+    margin-bottom: 20px;
+}
+
 
 .navbar.cookie {
     padding-top: 100px;
@@ -114,3 +123,4 @@ body{
     border-radius: 10px;
     border: 1px solid black;
 }
+

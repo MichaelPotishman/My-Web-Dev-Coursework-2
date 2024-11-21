@@ -30,9 +30,7 @@ $(document).ready(function() {
                 // Check which count to update 
                 if(vote_type == "up") { 
                     clicked_obj.children()[1].innerHTML = " " + response.upvotes; 
-                } else { 
-                    clicked_obj.children()[1].innerHTML = " " + response.downvotes; 
-                } 
+                }
             }, 
             error: function(error){ 
                 console.log(error); 

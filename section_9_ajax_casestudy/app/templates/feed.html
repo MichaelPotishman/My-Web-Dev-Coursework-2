@@ -11,24 +11,34 @@
             <!-- Get the dictionary containing data, then loop through everything in the correct post_id-->
             {% for post_id, post_data in posts.items() %}
                 <div class="post-container">
-                    <div class="username-container">
-                        {{ post_data.username }}
-                    </div>
-                    <div class="content-container">
-                        {{ post_data.content}}
-                    </div>
-                    <div class="hashtag-container">
-                        <!-- All the hashtags for a post in an array, so loop through it and print them out together -->
-                        {% for hashtag in post_data.hashtags %}
-                            {% if post_data.hashtags|length > 1 and (loop.index != 0 and loop.index != post_data.hashtags|length) %}
-                                <span class="hashtag"><button>#{{ hashtag }},</button></span>
+                    <div class="left-container">
+
+                        <div class="username-container">
+                            {{ post_data.username }}
+                        </div>
+                        <div class="content-container">
+                            {{ post_data.content}}
+                        </div>
+                        <div class="hashtag-container">
+                            <!-- All the hashtags for a post in an array, so loop through it and print them out together -->
+                            {% for hashtag in post_data.hashtags %}
+                                {% if post_data.hashtags|length > 1 and (loop.index != 0 and loop.index != post_data.hashtags|length) %}
+                                    <span class="hashtag"><button>#{{ hashtag }},</button></span>
+                                {% else %}
+                                    <span class="hashtag"><button>#{{ hashtag }}</button></span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <a class="vote" id="{{ post_id }}">
+                            {% if liked_posts[post_id] == True %}
+                                <i class="fas fa-thumbs-up" id="up"></i><span id="sup"> {{ post_data.upvotes }}</span></a>
                             {% else %}
-                                <span class="hashtag"><button>#{{ hashtag }}</button></span>
+                                <i class="far fa-thumbs-up" id="up"></i><span id="sup"> {{ post_data.upvotes }}</span></a>
                             {% endif %}
-                        {% endfor %}
                     </div>
-                    <a class="vote" id="{{ post_id }}">
-                        <i class="far fa-thumbs-up" id="up"></i><span id="sup"> {{ post_data.upvotes }}</span></a>
+                    <div class="right-container">
+                        
+                    </div>
                 </div>
             {% endfor %}
             <!-- Get the user_id in posts table, then use this to get the username from Users table with that user_id-->

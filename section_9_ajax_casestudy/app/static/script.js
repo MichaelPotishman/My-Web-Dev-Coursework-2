@@ -75,3 +75,20 @@ document.getElementById('theme-toggle').addEventListener('click', function () {
     }
     
 });
+
+// changing the icon of the thumbs up button
+const voteButtons = document.querySelectorAll('.vote')
+
+voteButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        const icon = button.querySelector('i');
+
+        if (icon.classList.contains('far')){
+            icon.classList.remove('far');
+            icon.classList.add('fas');
+        } else {
+            icon.classList.remove('fas');
+            icon.classList.add('far');
+        }
+    })
+})
