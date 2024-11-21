@@ -1,0 +1,116 @@
+.form-container{
+    color: black;
+    margin-top: 100px;
+}
+
+.alert{
+    margin-top: 56px;
+}
+
+.navbar.cookie{
+    padding-top: 100px;
+}
+  
+
+*{
+    padding: 0;
+    margin: 0;
+}
+
+body{
+    font-size: 1rem;
+    background-color: var(--primary-colour);
+}
+
+:root{
+    --primary-colour: white;
+}
+
+.dark-theme{
+    --primary-colour: white;
+}
+
+.cookie-container{
+    width: 100%;
+    margin: auto;
+}
+
+.subcontainer{
+    width: 85%;
+    margin: auto;
+}
+
+#cookies{
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    color: white;
+    background-color: rgb(0,0,0,0.7);
+    z-index: 1;
+}
+
+.cookies{
+    min-height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.cookies a{
+    color: yellow;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.navbar {
+    background-color: #1A1A1A; 
+    
+    justify-content: space-between;
+    color: white;
+    padding: 10px;
+    width: 100%; 
+    position: relative; 
+  }
+
+
+
+/*At 1600px change width of contaienr to be shorter */
+@media(max-width:1600px){
+    .cookie-container{
+        width: 100%;
+    }
+}
+
+@media(max-width:1024){
+    .cookies{
+        padding: 10px 0;
+    }
+}
+
+
+/* FEED.html */
+.new-main{
+    position: relative;
+    display: flex;
+    background-color: red;
+    margin-top: 20px;
+    height: 500px;
+    border-radius: 25px;
+    padding: 20px;
+}
+
+.navbar.cookie {
+    padding-top: 100px;
+}
+
+.post{
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background-color: blue;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid black;
+}

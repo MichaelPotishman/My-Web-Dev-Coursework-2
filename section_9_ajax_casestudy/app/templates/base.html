@@ -1,0 +1,87 @@
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        
+        <!-- Bootstrap CSS-->
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fontawesome-free-5.3.1-web/css/all.css') }}">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+
+        {% if title %}
+            <title> {{ title }}</title>
+            {% else %}
+            <title>No Title specified</title>
+            {% endif %} 
+    </head>
+    <body>
+      <!-- Define the navbar class, once its passed a small (sm) screen, it expands to full size-->
+        <nav class="navbar navbar-expand-sm fixed-top" role="navigation">
+          <div class="container-fluid">
+            <a class="navbar-brand" href="#">Assessments</a>
+            <!-- 'data-target' links to the information the 'hamburger' should display -> same as the id for the data-->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+       
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="/add">Add </a></li>
+              </ul>
+              <button id="theme-toggle" class="btn btn-outline-secondary ml-auto">
+                  {% if theme == 'dark' %}
+                    Switch to Light mode
+                  {% else %}
+                    Switch to Dark mode
+                  {% endif %}
+              </button>
+            </div>
+          </div>
+        </nav>
+
+        <!-- Define the main divs responsible for the block content -> Starts at col 1, goes on for 10 columns, leaving 1 column at the end-->
+        <!-- If any flashed messages, loop through and flash them on the screen -->
+        <div class="container-fluid-flash">
+          <div class="row">
+            <div class="col-1"></div>
+              <div class="col-10" >
+                {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                    {% for message in messages %}
+                      <div class="alert alert-success">
+                        {{ message }}
+                      </div>      
+                      {% endfor %}
+                  {% endif %}
+                {% endwith %}
+              {% block content %}{% endblock %}
+              </div>
+          </div>
+            
+        </div>
+
+        <div id="cookies">
+          <div class="cookie-container">
+            <div class="subcontainer">
+              <div class="cookies">
+                <p>This website uses cookies to enhance user experiences. <a href="">Learn More.</a></p>
+                <button id="cookies-btn">Thats fine</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Link to all scripts, such as script.js where all javascript is -->
+        
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>       
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+        <script src="{{ url_for('static', filename='script.js') }}"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent/3.1.1/cookieconsent.min.js"></script>
+        <script src="{{ url_for('static', filename='vote.js') }}"></script>
+    </body>
+</html>
