@@ -13,6 +13,7 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(500))
     email = db.Column(db.String(1000))
     date_of_birth = db.Column(db.Date)
+    profile_picture = db.Column(db.String(120), nullable = True)
 
     # references to other tables
     posts = db.relationship('Posts', back_populates='user')
@@ -32,6 +33,7 @@ class Posts(db.Model):
     post_id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(1000), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    image = db.Column(db.String(120), nullable = True)
     timestamp = db.Column(db.DateTime, index=True, default=db.func.now())
     upvotes = db.Column(db.Integer, default=0)
 

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="profile-container">
+    <button onclick="history.back()">GO back</button>
+    <h1>{{ user.username }}'s Profile</h1>
+    
+    <div class="profile-info">
+        <img src="{{ url_for('static', filename='uploads/' + user.profile_picture) }}" alt="Profile Picture" class="profile-img">
+    </div>
+    
+
+    <div class="user-posts">
+        <h2>Posts</h2>
+        {% if posts|length == 0 %}
+            <p>No posts yet.</p>
+        {% else %}
+            {% for post_id, post_data in posts.items() %}
+                <div class="post-container">
+                    <div class="content-container">
+                        {{ post_data.content }}
+                    </div>
+                    <div class="hashtag-container">
+                        {% for hashtag in post_data.hashtags %}
+                            <span class="hashtag">#{{ hashtag }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="post-stats">
+                        <span>Upvotes: {{ post_data.upvotes }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% if user.id == current_user.id %}
+            <button class="logout-btn"><a href = '/logout'>Log Out</a></button>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

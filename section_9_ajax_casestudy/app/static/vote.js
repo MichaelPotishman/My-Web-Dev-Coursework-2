@@ -1,4 +1,5 @@
 $(document).ready(function() {
+    
     // Set the token so that we are not rejected by server 
     var csrf_token = $('meta[name=csrf-token]').attr('content'); 
 
@@ -10,7 +11,9 @@ $(document).ready(function() {
             } 
         } 
     });  
-    
+
+
+
     $("a.vote").on("click", function() {
         var clicked_obj = $(this);  
         // Which idea was clicked? Which button? 
@@ -37,4 +40,22 @@ $(document).ready(function() {
             } 
         }); 
     }); 
+
+    $('#search_text').keyup(function(){
+        var search = $(this).val();
+        
+        if (search.trim() !== ''){
+            $.ajax({
+                url: "/livesearch",
+                method: "POST",
+                data: {query: search},
+                success: function(data) {
+                    $('.bottom-container').html(data);
+                }
+            });
+        } else {
+            // Reload all posts when search is empty
+            location.reload();
+        }
+    });
 });

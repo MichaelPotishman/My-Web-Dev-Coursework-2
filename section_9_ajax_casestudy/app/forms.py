@@ -1,9 +1,10 @@
 from flask_wtf import FlaskForm
-from wtforms import TextAreaField, StringField, HiddenField, SubmitField, DateField
+from wtforms import TextAreaField, StringField, HiddenField, SubmitField, DateField, FileField
 from wtforms.validators import DataRequired
 
-class IdeaForm(FlaskForm):
-    idea = TextAreaField('idea', validators=[DataRequired()])
+class DeletePostForm(FlaskForm):
+    post_id = HiddenField('Post ID')
+    submit = SubmitField('Delete')
 
 class LoginForm(FlaskForm):
     username = StringField('username', validators = [DataRequired()])
@@ -15,9 +16,13 @@ class RegisterForm(FlaskForm):
     password = StringField('password', validators = [DataRequired()])
     email = StringField('email', validators = [DataRequired()])
     date_of_birth =  DateField('deadline', validators=[DataRequired()])
+    profile_picture = FileField('Profile Picture')
+
+    
 
 class PostForm(FlaskForm):
     content = TextAreaField('content', validators = [DataRequired()])
+    image_or_video = FileField('image')
     hashtags = StringField('hashtags', validators=[DataRequired()])
 
 

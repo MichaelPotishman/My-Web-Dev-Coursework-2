@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="form-container">
-    <form action="" method="post" name="LoginForm">
+    <form action="" method="post" name="LoginForm" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
 
         <div class="form-group">
@@ -47,6 +47,18 @@
             {% if form.date_of_birth.errors %}
                 <div class="alert alert-danger" role="alert">
                     {% for error in form.date_of_birth.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="profile_picture">Profile Picture:</label>
+            {{ form.profile_picture(class="form-control", id="profile_picture") }}
+            {% if form.profile_picture.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {% for error in form.profile_picture.errors %}
                         <p>{{ error }}</p>
                     {% endfor %}
                 </div>

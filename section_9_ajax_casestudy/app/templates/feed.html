@@ -9,41 +9,59 @@
         {% else %}
             <meta name="csrf-token" content="{{ csrf_token() }}">
             <!-- Get the dictionary containing data, then loop through everything in the correct post_id-->
-            {% for post_id, post_data in posts.items() %}
-                <div class="post-container">
-                    <div class="left-container">
+            <div class="top-main">
+                <input type="text" name="search_text" id="search_text" class="form-control" placeholder="Search hashtags">
+            </div>
+            <div class="bottom-container">
+                <div id="result"></div>
+                {% for post_id, post_data in posts.items() %}
+                    <div class="post-container">
+                        <div class="left-container">
 
-                        <div class="username-container">
-                            {{ post_data.username }}
-                        </div>
-                        <div class="content-container">
-                            {{ post_data.content}}
-                        </div>
-                        <div class="hashtag-container">
-                            <!-- All the hashtags for a post in an array, so loop through it and print them out together -->
-                            {% for hashtag in post_data.hashtags %}
-                                {% if post_data.hashtags|length > 1 and (loop.index != 0 and loop.index != post_data.hashtags|length) %}
-                                    <span class="hashtag"><button>#{{ hashtag }},</button></span>
-                                {% else %}
-                                    <span class="hashtag"><button>#{{ hashtag }}</button></span>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                        <a class="vote" id="{{ post_id }}">
-                            {% if liked_posts[post_id] == True %}
-                                <i class="fas fa-thumbs-up" id="up"></i><span id="sup"> {{ post_data.upvotes }}</span></a>
+                            <div class="username-container">
+                                <a href="{{ url_for('profile', user_id=post_data.user_id) }}">
+                                    <img src="{{ url_for('static', filename='uploads/' + post_data.profile_picture) }}" alt="Profile Picture" class="profile-img">
+                                </a>
+                                <a href="{{ url_for('profile', user_id=post_data.user_id) }}">{{ post_data.username }}</a>
+                            </div>
+                            <div class="content-container">
+                                {{ post_data.content}}
+                            </div>
+                            {% if post_data.image %}
+                                <div class="image-container">
+                                    <img src="{{ url_for('static', filename='uploads/' + post_data.image) }}" alt="Post Image" class="post-img">
+                                </div>
                             {% else %}
-                                <i class="far fa-thumbs-up" id="up"></i><span id="sup"> {{ post_data.upvotes }}</span></a>
                             {% endif %}
-                    </div>
+                            <div class="hashtag-container">
+                                <!-- All the hashtags for a post in an array, so loop through it and print them out together -->
+                                {% for hashtag in post_data.hashtags %}
+                                    {% if post_data.hashtags|length > 1 and (loop.index != 0 and loop.index != post_data.hashtags|length) %}
+                                        <span class="hashtag">#{{ hashtag }},</span>
+                                    {% else %}
+                                        <span class="hashtag">#{{ hashtag }}</span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <a class="vote" id="{{ post_id }}">
+                                {% if liked_posts[post_id] == True %}
+                                    <i class="fas fa-thumbs-up" id="up"></i><span id="sup"> {{ post_data.upvotes }}</span></a>
+                                {% else %}
+                                    <i class="far fa-thumbs-up" id="up"></i><span id="sup"> {{ post_data.upvotes }}</span></a>
+                                {% endif %}
+                        </div>
                     {% if post_data.user_id == current_user.id %}
-                    <div class="right-container">
-                        
-                        <p>DELETE</p>
-                    </div>
+                        <div class="right-container">
+                            <form action="{{ url_for('delete_post', post_id=post_id) }}" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button class="delete-button" type="submit">DELETE</button>
+                            </form>
+                        </div>
                     {% endif %}
                 </div>
             {% endfor %}
+            </div>
+            
             <!-- Get the user_id in posts table, then use this to get the username from Users table with that user_id-->
         {% endif %}
         <div class="post">

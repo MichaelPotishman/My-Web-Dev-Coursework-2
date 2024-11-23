@@ -1,54 +1,152 @@
-.form-container{
-    color: black;
-    margin-top: 100px;
-}
-
-.alert{
-    margin-top: 56px;
-}
-
-.navbar.cookie{
-    padding-top: 100px;
-}
-  
-
-*{
+/* Reset and base styles */
+* {
+    margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+label{
     margin: 0;
 }
 
-body{
-    font-size: 1rem;
-    background-color: var(--primary-colour);
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f3f4f6;
+    color: #1f2937;
 }
 
-:root{
-    --primary-colour: white;
+/* Navbar */
+.navbar {
+    background-color: white;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
-.dark-theme{
-    --primary-colour: white;
+.navbar a, 
+.navbar button {
+    color: #4b5563;
+    text-decoration: none;
+    transition: color 0.2s;
 }
 
-.cookie-container{
+.navbar a:hover, 
+.navbar button:hover {
+    color: #2563eb;
+}
+
+.profile-img {
+    height: 2.5rem;
+    width: 2.5rem;
+    border-radius: 9999px;
+    object-fit: cover;
+    border: 2px solid #e5e7eb;
+}
+
+/* Search input */
+input[type="text"] {
+    margin-top: 20px;
+    margin-bottom: 20px;
     width: 100%;
-    margin: auto;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    transition: all 0.2s;
 }
 
-.subcontainer{
-    width: 85%;
-    margin: auto;
+input[type="text"]:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
+/* Post container */
+.post-container {
+    padding: 20px;
+    background-color: white;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+    transition: transform 0.2s;
+    margin-bottom: 10px;
+}
+
+.post-container:hover {
+    transform: translateY(-2px);
+}
+
+/* Hashtags */
+.hashtag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    background-color: #dbeafe;
+    color: #1e40af;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Like button */
+.vote {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6b7280;
+    transition: color 0.2s;
+}
+
+.vote:hover {
+    color: #2563eb;
+}
+
+/* Delete button */
+.delete-button {
+    padding: 0.5rem 1rem;
+    color: #dc2626;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    transition: color 0.2s;
+}
+
+.delete-button:hover {
+    color: #991b1b;
+}
+
+/* Post button */
+.post {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background-color: #2563eb;
+    color: white;
+    padding: 1rem;
+    border-radius: 9999px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.post:hover {
+    transform: translateY(-2px);
+    background-color: #1d4ed8;
+}
+
+/* cookie  */
 #cookies{
     width: 100%;
     position: fixed;
     bottom: 0;
     color: white;
-    background-color: rgb(0,0,0,0.7);
+    background-color: rgba(0, 0, 0, 0.7);
     z-index: 1;
 }
-
 .cookies{
     min-height: 70px;
     display: flex;
@@ -58,89 +156,8 @@ body{
     gap: 10px;
 }
 
-.cookies a{
-    color: yellow;
-    font-weight: 500;
-    text-decoration: none;
+/* Dark mode styles */
+.dark-theme {
+    background-color: #1f2937;
+    color: #f3f4f6;
 }
-
-.navbar {
-    background-color: #1A1A1A; 
-    
-    justify-content: space-between;
-    color: white;
-    padding: 10px;
-    width: 100%; 
-    position: relative; 
-  }
-
-
-
-/*At 1600px change width of contaienr to be shorter */
-@media(max-width:1600px){
-    .cookie-container{
-        width: 100%;
-    }
-}
-
-@media(max-width:1024){
-    .cookies{
-        padding: 10px 0;
-    }
-}
-
-
-/* FEED.html */
-.new-main {
-    border-radius: 25px;
-    margin-top: 50px;
-    display: grid;
-    grid-template-columns: 1fr;  /* Ensures only one column */
-    width: 100%;
-    background-color: red;
-    padding: 20px;
-}
-
-.post-container {
-    display: flex;
-    padding: 10px;
-    border-radius: 12.5px;
-    justify-content: space-between;
-
-    margin-bottom: 20px;
-}
-
-.left-container{
-    width: 60%;
-    background-color: purple;
-}
-
-.right-container{
-    background-color: green;
-    width: 30%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-}
-
-.right-container p{
-    color: white;
-    margin: 0;
-}
-
-
-.navbar.cookie {
-    padding-top: 100px;
-}
-
-.post{
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    background-color: blue;
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid black;
-}
-
