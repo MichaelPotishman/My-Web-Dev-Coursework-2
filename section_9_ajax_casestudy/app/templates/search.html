@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="new-main">
+    <div class="choose-feed"></div>
+    <div class="main-content">
+        {% if posts|length == 0 %}
+            No posts
+        {% else %}
+            <div class="top-main">
+                <input type="text" name="search_text" id="search_text" class="form-control" placeholder="Search hashtags">
+            </div>
+        <!-- Add #result div -->
+            <meta name="csrf-token" content="{{ csrf_token() }}">
+            {% if not posts %}
+                <div class="bottom-container">
+                    <p>No posts found</p>
+                </div>
+            {% else %}
+            <div id = "result"></div>
+            {% endif %}
+        {% endif %}
+                
+{% endblock %}

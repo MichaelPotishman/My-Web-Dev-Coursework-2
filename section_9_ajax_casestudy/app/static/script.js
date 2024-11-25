@@ -92,3 +92,21 @@ voteButtons.forEach(button => {
         }
     })
 })
+
+// open modals for deleting account
+document.addEventListener("DOMContentLoaded", function () {
+    const openModalbtn = document.getElementById("open-modal-btn");
+    const closeModalbtn = document.getElementById("close-modal-btn");
+    const modal = document.getElementById("confirmation-modal");
+
+    // show the modal when delete button pressed
+    openModalbtn.addEventListener("click", function () {
+        modal.style.display = "flex";
+    });
+
+    closeModalbtn.addEventListener("click", function () {
+        modal.style.display = "none";
+    });
+
+    
+});

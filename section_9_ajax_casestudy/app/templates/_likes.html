@@ -1,0 +1,16 @@
+
+{% for post_data in posts %}
+<div class="post-container">
+    <div class="content-container">
+        "{{ post_data.content }}"
+    </div>
+    <div class="hashtag-container">
+        {% for hashtag in post_data.hashtags %}
+            <span class="hashtag">#{{ hashtag }}</span>
+        {% endfor %}
+    </div>
+    <div class="post-stats">
+        <span>Upvotes: {{ post_data.upvotes }}</span>
+    </div>
+</div>
+{% endfor %}

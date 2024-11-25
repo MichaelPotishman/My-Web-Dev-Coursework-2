@@ -1,39 +1,51 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+
+
+
+
 <div class="profile-container">
-    <button onclick="history.back()">GO back</button>
-    <h1>{{ user.username }}'s Profile</h1>
-    
-    <div class="profile-info">
-        <img src="{{ url_for('static', filename='uploads/' + user.profile_picture) }}" alt="Profile Picture" class="profile-img">
+    <div class="upper-buttons">
+        <button onclick="history.back()">GO back</button>
+        <button class="delete-button" id="open-modal-btn">DELETE ACCOUNT</button>
+        <div id="confirmation-modal" class="modal">
+            <div class="modal-content">
+                <h2>Are you sure you want to delete your account?</h2>
+                <p>This action cannot be undone.</p>
+                <div class="modal-buttons">
+                    <form action="{{ url_for('delete_account', user_id=current_user.id) }}" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <button class="confirm-delete" type="submit">Yes, Delete</button>
+                    </form>
+                    <button class="cancel-delete" id="close-modal-btn">Cancel</button>
+                </div>
+            </div>
+        </div>
     </div>
+    
+    <div class="user-profile-container">
+        <div class="user-profile-info">
+            <img src="{{ url_for('static', filename='uploads/' + (user.profile_picture if user.profile_picture else 'default.jpg')) }}" alt="Profile Picture" class="user-profile-img">
+
+        </div>
+        <h1>{{ user.username }}</h1>
+    
+        
+    </div>
+    
     
 
-    <div class="user-posts">
-        <h2>Posts</h2>
-        {% if posts|length == 0 %}
-            <p>No posts yet.</p>
-        {% else %}
-            {% for post_id, post_data in posts.items() %}
-                <div class="post-container">
-                    <div class="content-container">
-                        {{ post_data.content }}
-                    </div>
-                    <div class="hashtag-container">
-                        {% for hashtag in post_data.hashtags %}
-                            <span class="hashtag">#{{ hashtag }}</span>
-                        {% endfor %}
-                    </div>
-                    <div class="post-stats">
-                        <span>Upvotes: {{ post_data.upvotes }}</span>
-                    </div>
-                </div>
-            {% endfor %}
-        {% endif %}
-        {% if user.id == current_user.id %}
-            <button class="logout-btn"><a href = '/logout'>Log Out</a></button>
-        {% endif %}
+    <div class="profile-tabs">
+        <button id="posts-btn" class="tab-btn" data-username="{{ user.username }}">Posts</button>
+        <button id="likes-btn" class="tab-btn" data-username="{{ user.username }}">Likes</button>
     </div>
+
+    <!-- Here is where the ajax part in vote.js places the response it gets -->
+    <div id="content-area"></div>
 </div>
 {% endblock %}
+    
+
+
