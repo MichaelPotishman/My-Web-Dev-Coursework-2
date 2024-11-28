@@ -3,7 +3,9 @@ from flask import render_template, flash, request, redirect
 from .forms import LoginForm, RegisterForm, PostForm
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.utils import secure_filename
-
+from flask import request
+from sqlalchemy import func
+import json
 import os
 
 UPLOAD_FOLDER = 'app/static/uploads'
@@ -14,9 +16,13 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 
 
+# check if file for profile/image/video is allowed
+def allowed_file(filename):
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-import json
-
+# LOGIN USER / LOGOUT USER / DELETE USER / REGISTER USER
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -38,6 +44,20 @@ def login():
     
     return render_template('home.html', form=form, title="Login / Register", theme=theme)
 
+@app.route('/delete_account/<int:user_id>', methods=['POST'])
+@login_required
+def delete_account(user_id):
+    user = models.User.query.get(user_id)
+    db.session.delete(user)
+    db.session.commit()
+    return redirect('/')
+
+@app.route('/logout', methods=['GET', 'POST'])
+@login_required
+def logout():
+    logout_user()
+    return redirect('/')
+    
 @app.route('/register', methods=['GET','POST'])
 def register():
     theme = request.cookies.get('theme')
@@ -47,7 +67,7 @@ def register():
         profile_picture = request.files['profile_picture']
         
         if profile_picture.filename == '':
-            filename = 'default.png'  # User did not upload a file
+            filename = 'default.jpg'  # User did not upload a file
         elif profile_picture:
             filename = secure_filename(profile_picture.filename)
             profile_picture.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
@@ -63,11 +83,12 @@ def register():
 
     return render_template('register.html', form=form, title="Login / Register", theme=theme)
 
-        
+
+# FEED PAGE / SEARCH PAGE / SEARCH RESULTS PAGE / POST PAGE
 @app.route('/feed', methods=['GET','POST'])
 @login_required
 def feed():
-    # Join User table to Post, then Post to PostHshtag, then PostHashtag to Hashtag
+    # get all posts by: User table to Post, then Post to PostHshtag, then PostHashtag to Hashtag
     user_posts = models.Posts.query.join(models.User, models.Posts.user_id == models.User.id).join(models.PostHashtag, models.Posts.post_id == models.PostHashtag.post_id).join(models.Hashtags, models.PostHashtag.hashtag_id == models.Hashtags.id).order_by(models.Posts.post_id.desc()).all()
 
     posts_dict = {}
@@ -96,24 +117,46 @@ def feed():
         
 
     theme = request.cookies.get('theme')
-    return render_template('feed.html', theme=theme, posts=posts_dict, liked_posts = liked_posts, user_id=current_user.id, post_id = post_id)
+    return render_template('feed.html', theme=theme, posts=posts_dict, liked_posts = liked_posts, user_id=current_user.id)
 
+# search - only show the top part as the rest is done by AJAX so show only search bar IF there are posts at all
 @app.route('/search', methods=['GET'])
 def search_page():
     user_posts = models.Posts.query.join(models.User, models.Posts.user_id == models.User.id).join(models.PostHashtag, models.Posts.post_id == models.PostHashtag.post_id).join(models.Hashtags, models.PostHashtag.hashtag_id == models.Hashtags.id).order_by(models.Posts.post_id.desc()).all()
-    theme=request.cookies.get('theme')
-    return render_template('search.html', posts = user_posts, theme=theme)
-    
 
+
+    all_users = db.session.query(models.User.id, models.User.username).all()
+    all_hashtags = db.session.query(models.Hashtags.id,models.Hashtags.name).all()
+        
+    user_dict = {}
+    for user in all_users:
+        if user.id not in user_dict:
+            user_dict[user.id] = {'username': user.username,
+                                  'user_id':user.id}
+            
+    hashtag_dict = {}
+    for hashtag in all_hashtags:
+        if hashtag.id not in hashtag_dict:
+            hashtag_dict[hashtag.id] = {'hashtag': hashtag.name,
+                                        'hashtag_id': hashtag.id}
+        
+        
+
+        
+    
+    theme=request.cookies.get('theme')
+    return render_template('search.html', posts = user_posts, theme=theme, all_users=user_dict, all_hashtags=hashtag_dict)
+    
+# search results - show the posts matching the users input
 @app.route("/search/<string:search_text>", methods=["GET"])
 @login_required
 def search(search_text):
+    # first join all the needed tables and filter them for it the users input is PART of one of the hashtags
     filtered_posts = (
         models.Posts.query
-        .outerjoin(models.PostHashtag, models.Posts.post_id == models.PostHashtag.post_id)
-        .outerjoin(models.Hashtags, models.PostHashtag.hashtag_id == models.Hashtags.id)
+        .join(models.PostHashtag, models.Posts.post_id == models.PostHashtag.post_id)
+        .join(models.Hashtags, models.PostHashtag.hashtag_id == models.Hashtags.id)
         .filter(
-            (models.Posts.content.ilike(f"%{search_text}%")) | 
             (models.Hashtags.name.ilike(f"%{search_text}%"))
         )
         .distinct()
@@ -125,6 +168,7 @@ def search(search_text):
     liked_posts = {}
     posts_data = {}
     
+    # then for each post gathered have the key be the post_id adn the values have all the needed info for posts_template.html to require
     for post in filtered_posts:
         post_id = post.post_id
         posts_data[post_id] = {
@@ -141,23 +185,21 @@ def search(search_text):
         liked_posts[post_id] = bool(existing_like)
     
     print("Posts Data:", posts_data)
-    return render_template("_search_results.html", posts=posts_data, liked_posts=liked_posts)
+    return render_template("posts_template.html", posts=posts_data, liked_posts=liked_posts)
 
 
+# post page - gets the PostForm and allows users to add content to their post
 @app.route('/post', methods=['GET', 'POST'])
 @login_required
 def post():
     form = PostForm()
     theme = request.cookies.get('theme')
 
-    # Debug: Print all files in request
-    print("Files in request:", request.files)
-    print("Form data:", request.form)
-
+    # if the form is completed correctly, define hashtags as a set so its unique ones only to stop users from doing same one loads of times
     if form.validate_on_submit():
         hashtags = set()
         content = form.content.data
-        raw_hashtags = form.hashtags.data
+        all_hashtags = form.hashtags.data
         user_id = current_user.id
         
         
@@ -179,7 +221,7 @@ def post():
                 file.save(file_path)
                 
    
-        # Create and add the new post with the image filename
+        # add the new post with the image filename
         new_post = models.Posts(
             content=content,
             user_id=user_id,
@@ -190,9 +232,9 @@ def post():
         db.session.add(new_post)
         db.session.flush()
 
-        # Process hashtags (rest of the code remains the same)
-        raw_hashtags = raw_hashtags.replace(',', ' ')
-        words = raw_hashtags.split()
+        # change the users hashtags input to remove the # (if they put) and add commas instead of spaces
+        all_hashtags = all_hashtags.replace(',', ' ')
+        words = all_hashtags.split()
 
         for word in words:
             potential_tags = word.split('#')
@@ -217,16 +259,8 @@ def post():
 
     return render_template('post.html', theme=theme, form=form, user_id=current_user.id)
 
-# Add this helper function to check file extensions
-def allowed_file(filename):
-    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
-from flask import request, jsonify
-import json
-
+# UPVOTING POSTS
 @app.route('/vote', methods=['POST'])
 @login_required
 def vote():
@@ -270,55 +304,7 @@ def delete_post(post_id):
         db.session.commit()
     return redirect('/feed')
 
-@app.route('/profile/<int:user_id>', methods=['GET'])
-@login_required
-def profile(user_id):
-    # Get only specific posts from that user and show them with the information on it
-    user = models.User.query.get(user_id)
-    users_posts = models.Posts.query.filter_by(user_id=user_id).order_by(models.Posts.post_id.desc()).all()
-    
-    user_posts_dict = {}
-    for post in users_posts:
-        post_id = post.post_id
-        if post.post_id not in user_posts_dict:
-            user_posts_dict[post_id] = { 
-                'content': post.content, 
-                'username': user.username, 
-                'hashtags': [], 
-                'upvotes': post.upvotes,
-                'user_id': current_user.id
-                }
-            for hashtag in post.hashtags:
-                user_posts_dict[post_id]['hashtags'].append(hashtag.name)
-            
-    theme = request.cookies.get('theme')
-    return render_template('profile.html', user=user, posts=user_posts_dict, theme=theme, user_id=current_user.id)
 
-@app.route('/hashtag-profile/<string:hashtag_name>', methods=['GET', 'POST'])
-@login_required
-def hashtag_profile(hashtag_name):
-    hashtag = hashtag_name  # 'hashtag' is being passed to the template
-    posts_with_hashtag = models.Posts.query \
-        .join(models.PostHashtag, models.Posts.post_id == models.PostHashtag.post_id) \
-        .join(models.Hashtags, models.PostHashtag.hashtag_id == models.Hashtags.id) \
-        .filter(models.Hashtags.name == hashtag_name) \
-        .order_by(models.Posts.post_id.desc()).all()
-
-    posts_dict = {}
-    for post in posts_with_hashtag:
-        image = post.image if post.image else ''
-        post_id = post.post_id
-        posts_dict[post_id] = {
-            'content': post.content,
-            'username': post.user.username,
-            'hashtags': hashtag, 
-            'upvotes': post.upvotes,
-            'user_id': post.user_id,
-            'image': image
-        }
-
-    theme = request.cookies.get('theme')
-    return render_template('hashtag_profile.html', theme=theme, posts=posts_dict, hashtag=hashtag_name)
 
 @app.route('/edit/<int:post_id>', methods=['GET','POST'])
 @login_required
@@ -333,76 +319,124 @@ def edit_post(post_id):
         
         # place the data already in the database on the form so users can edit
         post.content = form.content.data
-        post.image_or_video = form.image_or_video.data
-        post.hashtags = form.hashtags.data
-        
+                
         flash("Successfully updated your post!")
         db.session.commit()
+        return redirect('/feed')
+
         
     return render_template('edit.html', form=form, theme=theme)
 
-# Flask routes
-@app.route('/profile/<username>/posts')
-def get_user_posts(username):
-    user = models.User.query.filter_by(username=username).first()
-    posts = models.Posts.query.filter_by(user_id=user.id).order_by(models.Posts.timestamp.desc()).all()
-    
-    return render_template('_posts.html', posts=posts)  # Note the underscore prefix for partial template
-
-@app.route('/profile/<username>/likes')
-def get_user_likes(username):
-    user = models.User.query.filter_by(username=username).first_or_404()
-    liked_posts = models.Posts.query.join(models.Likes).filter(models.Likes.user_id == user.id).all()
-    
-    return render_template('_likes.html', posts=liked_posts)
-    
-
-
-
-@app.route('/delete_account/<int:user_id>', methods=['POST'])
+# ALL PROFILE ROUTES
+@app.route('/profile/<int:user_id>', methods=['GET','POST'])
 @login_required
-def delete_account(user_id):
+def profile(user_id):
+    # Get specific posts from user, display profile image and name as well as the buttons
     user = models.User.query.get(user_id)
-    db.session.delete(user)
-    db.session.commit()
-    return redirect('/')
 
+    theme = request.cookies.get('theme')
+    return render_template('profile.html', user=user, theme=theme)
 
+@app.route('/hashtag-profile/<string:hashtag_name>', methods=['GET', 'POST'])
+@login_required
+def hashtag_profile(hashtag_name):
+    hashtag = hashtag_name 
+    posts_with_hashtag = models.Posts.query.join(models.PostHashtag, models.Posts.post_id == models.PostHashtag.post_id).join(models.Hashtags, models.PostHashtag.hashtag_id == models.Hashtags.id).filter(models.Hashtags.name == hashtag_name).order_by(models.Posts.post_id.desc()).all()
 
-@app.route('/logout', methods=['GET', 'POST'])
-def logout():
-    logout_user()
-    return redirect('/')
-    
-# @app.route('/livesearch', methods=['POST'])
-# def livesearch():
-#     search_hashtag = request.form['query'].lower().strip('#')
-
-#     # Retrieve posts, join with User, PostHashtag, and Hashtags to get the required data
-#     user_posts = models.Posts.query \
-#         .join(models.User, models.Posts.user_id == models.User.id) \
-#         .join(models.PostHashtag, models.Posts.post_id == models.PostHashtag.post_id) \
-#         .join(models.Hashtags, models.PostHashtag.hashtag_id == models.Hashtags.id) \
-#         .order_by(models.Posts.post_id.desc()).all()
-    
-#     filtered_posts = []
-#     liked_posts = {}
-
-#     # Loop through user_posts (which is a list of SQLAlchemy model objects)
-#     for post in user_posts:
-#         # Access the hashtags and ensure case-insensitivity
-#         hashtags = [h.name.lower() for h in post.hashtags]  # Assuming the 'Hashtags' model has a 'name' field
+    posts_dict = {}
+    liked_posts={}
+    for post in posts_with_hashtag:
+        image = post.image if post.image else ''
+        post_id = post.post_id
+        posts_dict[post_id] = {
+            'content': post.content,
+            'username': post.user.username,
+            'hashtags': [], 
+            'upvotes': post.upvotes,
+            'user_id': post.user_id,
+            'image': image
+        }
         
-#         # Check if the search term is in any of the hashtags
-#         if search_hashtag in ' '.join(hashtags):
-#             filtered_posts.append(post)
+    for hashtag in post.hashtags:
+            posts_dict[post_id]['hashtags'].append(hashtag.name)
             
-#         # Check if the current user has liked this post
-#         existing_like = models.Likes.query.filter_by(user_id=current_user.id, post_id=post.post_id).first()
-#         liked_posts[post.post_id] = bool(existing_like)
+    existing_like = models.Likes.query.filter_by(user_id=current_user.id, post_id=post_id).first()
+    if existing_like:
+        print("FOR POST :", post_id, "EXISTING LIKE: TRUE")
+    liked_posts[post_id] = bool(existing_like)
 
-#     # Render the filtered posts with liked status
-#     return render_template('feed-content.html', 
-#                            posts=filtered_posts, 
-#                            liked_posts=liked_posts,
-#                            current_user=current_user)
+    theme = request.cookies.get('theme')
+    return render_template('hashtag_profile.html', theme=theme, posts=posts_dict, liked_posts = liked_posts, hashtag=hashtag_name)
+
+
+
+@app.route('/profile/<username>/posts', methods=['GET','POST'])
+@login_required
+def get_user_posts(username):
+    # Get user id and then get all the posts from that user and pass it in to profile-posts.html
+    # AJAX SECTION - when user presses the posts button they gt sent to this view, then sends them to profile-posts html
+    user = models.User.query.filter_by(username=username).first()
+    user_posts = models.Posts.query.filter_by(user_id=user.id).order_by(models.Posts.timestamp.desc()).all()
+    
+    posts_dict = {}
+    liked_posts = {}
+    for post in user_posts:
+        post_id = post.post_id
+        if post.post_id not in posts_dict:
+            
+            profile_pic = post.user.profile_picture if post.user.profile_picture else 'default.jpg'
+            image = post.image if post.image else ''
+            
+            posts_dict[post_id] = {'content' : post.content,
+                                   'username': post.user.username,
+                                   'hashtags': [],
+                                   'upvotes': post.upvotes,
+                                   'user_id': post.user_id,
+                                   'profile_picture': profile_pic,
+                                   'image': image}
+        for hashtag in post.hashtags:
+            posts_dict[post_id]['hashtags'].append(hashtag.name)
+            
+        existing_like = models.Likes.query.filter_by(user_id=current_user.id, post_id=post_id).first()
+        if existing_like:
+            print("FOR POST :", post_id, "EXISTING LIKE: TRUE")
+        liked_posts[post_id] = bool(existing_like)
+    
+    theme = request.cookies.get('theme')
+    return render_template('posts_template.html', theme=theme,posts=posts_dict, liked_posts=liked_posts)
+
+@app.route('/profile/<username>/likes', methods=['GET','POST'])
+@login_required
+def get_user_likes(username):
+    # Get user id and then get all the likes from that user and pass it in to profile-likes.html
+    # AJAX SECTION - when user presses the posts button they gt sent to this view, then sends them to profile-likes html
+    user = models.User.query.filter_by(username=username).first_or_404()
+    user_liked_posts = models.Posts.query.join(models.Likes).filter(models.Likes.user_id == user.id).all()
+    
+    posts_dict = {}
+    liked_posts = {}
+    for post in user_liked_posts:
+        post_id = post.post_id
+        if post.post_id not in posts_dict:
+            
+            profile_pic = post.user.profile_picture if post.user.profile_picture else 'default.jpg'
+            image = post.image if post.image else ''
+            
+            posts_dict[post_id] = {'content' : post.content,
+                                   'username': post.user.username,
+                                   'hashtags': [],
+                                   'upvotes': post.upvotes,
+                                   'user_id': post.user_id,
+                                   'profile_picture': profile_pic,
+                                   'image': image}
+        for hashtag in post.hashtags:
+            posts_dict[post_id]['hashtags'].append(hashtag.name)
+            
+        existing_like = models.Likes.query.filter_by(user_id=current_user.id, post_id=post_id).first()
+        if existing_like:
+            print("FOR POST :", post_id, "EXISTING LIKE: TRUE")
+        liked_posts[post_id] = bool(existing_like)
+    
+    theme = request.cookies.get('theme')
+    return render_template('posts_template.html', theme=theme, posts=posts_dict, liked_posts=liked_posts)
+

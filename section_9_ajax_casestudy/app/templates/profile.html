@@ -2,27 +2,42 @@
 
 {% block content %}
 
-
-
-
-
 <div class="profile-container">
     <div class="upper-buttons">
-        <button onclick="history.back()">GO back</button>
-        <button class="delete-button" id="open-modal-btn">DELETE ACCOUNT</button>
-        <div id="confirmation-modal" class="modal">
-            <div class="modal-content">
-                <h2>Are you sure you want to delete your account?</h2>
-                <p>This action cannot be undone.</p>
-                <div class="modal-buttons">
-                    <form action="{{ url_for('delete_account', user_id=current_user.id) }}" method="POST">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                        <button class="confirm-delete" type="submit">Yes, Delete</button>
-                    </form>
-                    <button class="cancel-delete" id="close-modal-btn">Cancel</button>
+        <button class = "left-button" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+        {% if user.id == current_user.id %}
+        <div class="more-right-buttons">
+            <button class="delete-button" id="logout-open-modal-btn">LOG OUT</button>
+            <div id="logout-confirmation-modal" class="modal">
+                <div class="modal-content">
+                    <h2>Are you sure you want to log out?</h2>
+                    <div class="modal-buttons">
+                        <form action="/logout" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <button class="confirm-delete" type="submit">Log out</button>
+                        </form>
+                        <button class="cancel-delete" id="logout-close-modal-btn">Cancel</button>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="delete-button" id="open-modal-btn">DELETE ACCOUNT</button>
+            <div id="account-confirmation-modal" class="modal">
+                <div class="modal-content">
+                    <h2>Are you sure you want to delete your account?</h2>
+                    <p>This action cannot be undone.</p>
+                    <div class="modal-buttons">
+                        <form action="{{ url_for('delete_account', user_id=current_user.id) }}" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <button class="confirm-delete" type="submit">Yes, Delete</button>
+                        </form>
+                        <button class="cancel-delete" id="close-modal-btn">Cancel</button>
+                    </div>
                 </div>
             </div>
         </div>
+            
+        {% endif %}
     </div>
     
     <div class="user-profile-container">
@@ -42,7 +57,7 @@
         <button id="likes-btn" class="tab-btn" data-username="{{ user.username }}">Likes</button>
     </div>
 
-    <!-- Here is where the ajax part in vote.js places the response it gets -->
+    <!-- AJAX PART -->
     <div id="content-area"></div>
 </div>
 {% endblock %}

@@ -76,37 +76,57 @@ document.getElementById('theme-toggle').addEventListener('click', function () {
     
 });
 
-// changing the icon of the thumbs up button
-const voteButtons = document.querySelectorAll('.vote')
 
-voteButtons.forEach(button => {
-    button.addEventListener('click', function() {
-        const icon = button.querySelector('i');
-
-        if (icon.classList.contains('far')){
-            icon.classList.remove('far');
-            icon.classList.add('fas');
-        } else {
-            icon.classList.remove('fas');
-            icon.classList.add('far');
-        }
-    })
-})
-
-// open modals for deleting account
 document.addEventListener("DOMContentLoaded", function () {
-    const openModalbtn = document.getElementById("open-modal-btn");
-    const closeModalbtn = document.getElementById("close-modal-btn");
-    const modal = document.getElementById("confirmation-modal");
+    // POST DELETION!
+    // each post has its own opening modal, confirming delete and close modal button so get ALL OF THEM
+    const deleteButtons = document.querySelectorAll("#post-open-modal-btn");
+    const modals = document.querySelectorAll("#post-confirmation-modal");
+    const closeModalButtons = document.querySelectorAll("#post-close-modal-btn");
 
-    // show the modal when delete button pressed
-    openModalbtn.addEventListener("click", function () {
-        modal.style.display = "flex";
+    // loop through the amount of delete buttons, changing the style fo the modals to show/hide them
+    for (let i = 0; i < deleteButtons.length; i++) {
+        deleteButtons[i].onclick = function() {
+            modals[i].style.display = "flex";
+        };
+
+        closeModalButtons[i].onclick = function() {
+            modals[i].style.display = "none";
+        };
+    }
+
+    // Account Deletion Modal
+    const accountDeleteBtn = document.getElementById("open-modal-btn");
+    const accountModal = document.getElementById("account-confirmation-modal");
+    const accountCloseBtn = document.getElementById("close-modal-btn");
+
+
+    accountDeleteBtn.addEventListener("click", function() {
+        accountModal.style.display = "flex";
     });
 
-    closeModalbtn.addEventListener("click", function () {
-        modal.style.display = "none";
+
+    accountCloseBtn.addEventListener("click", function() {
+        accountModal.style.display = "none";
     });
 
-    
+    // Logout Modal
+    const logoutBtn = document.getElementById("logout-open-modal-btn");
+    const logoutModal = document.getElementById("logout-confirmation-modal");
+    const logoutCloseBtn = document.getElementById("logout-close-modal-btn");
+
+
+    logoutBtn.addEventListener("click", function() {
+        logoutModal.style.display = "flex";
+
+    });
+
+
+    logoutCloseBtn.addEventListener("click", function() {
+        logoutModal.style.display = "none";
+
+    });
 });
+
+
+

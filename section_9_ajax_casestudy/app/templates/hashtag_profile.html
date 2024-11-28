@@ -3,33 +3,8 @@
 {% block content %}
 <div class="profile-container">
     <button onclick="history.back()">GO back</button>
-    <h1>#{{ hashtag }}'s Profile</h1>  <!-- Display the hashtag name directly -->
+    <h1>#{{ hashtag }}'s Profile</h1> 
 
-    <div class="user-posts">
-        <h2>Posts</h2>
-        {% if posts|length == 0 %}
-            <p>No posts yet.</p>
-        {% else %}
-            {% for post in posts.values() %}
-                <div class="post-container">
-                    <div class="content-container">
-                        {{ post.content }}
-                    </div>
-                    {% if post.image %}
-                        <div class="image-container">
-                            <img src="{{ url_for('static', filename='uploads/' + post.image) }}" alt="Post Image" class="post-img">
-                        </div>
-                    {% else %}
-                    {% endif %}
-                    <div class="hashtag-container">
-                        <span class="hashtag">#{{ hashtag }}</span>
-                    </div>
-                    <div class="post-stats">
-                        <span>Upvotes: {{ post.upvotes }}</span>
-                    </div>
-                </div>
-            {% endfor %}
-        {% endif %}
-    </div>
+    {% include "posts_template.html" %}
 </div>
 {% endblock %}

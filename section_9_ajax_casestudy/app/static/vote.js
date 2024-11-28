@@ -14,9 +14,8 @@ $(document).ready(function() {
 
 
 
-    $("a.vote").on("click", function() {
+    $(document).on("click", "a.vote", function() {
         var clicked_obj = $(this);  
-        // Which idea was clicked? Which button? 
         var post_id = $(this).attr('id'); 
         var vote_type = $(this).children()[0].id;  
         console.log("Vote button clicked for post ID: " + post_id + ", Vote type: " + vote_type);   
@@ -33,6 +32,15 @@ $(document).ready(function() {
                 // Check which count to update 
                 if(vote_type == "up") { 
                     clicked_obj.children()[1].innerHTML = " " + response.upvotes; 
+                }
+
+                var thumbsUpIcon = clicked_obj.find('i');
+        
+                // If the thumbs up icon as 'far' and is pressed, go from filled to unfilled or opposite
+                if (thumbsUpIcon.hasClass('far')) {
+                    thumbsUpIcon.removeClass('far').addClass('fas');
+                } else {
+                    thumbsUpIcon.removeClass('fas').addClass('far');
                 }
             }, 
             error: function(error){ 
@@ -77,18 +85,18 @@ $(document).ready(function() {
         });
     }
 
-    // Event handlers for buttons
     $('#posts-btn').on('click', function() {
         const username = $(this).data('username');
         loadPosts(username);
     });
 
+    // if user presses like button, go to loadLikes function
     $('#likes-btn').on('click', function() {
         const username = $(this).data('username');
         loadLikes(username);
     });
 
-    // Load posts by default
+    // makes posts appear straiht away as default
     const username = $('#posts-btn').data('username');
     if (username) {
         loadPosts(username);
@@ -107,7 +115,7 @@ $(document).ready(function() {
             },
             error: function(error) {
                 console.log("Search error:", error);
-                $("#result").html('<p>Error loading search results</p>');
+                $("#result").html('<p>No results matching your search</p>');
             }
         });
     });
