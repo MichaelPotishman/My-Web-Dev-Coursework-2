@@ -2,9 +2,9 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-10 col-sm-10 col-md-10 col-lg-10 col-xl-10 col-xxl-7">
+    <div class="col-10 col-sm-10 col-md-10 col-lg-10 col-xl-7 col-xxl-4">
         <button class = "left-button" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
-        <div class="form-container">
+        <div class="edit-form-container">
             <form action="" method="post" name="LoginForm" enctype="multipart/form-data">
                 {{ form.hidden_tag() }}
 
@@ -58,9 +58,10 @@
 
 
                 <!-- Submit Buttons -->
-                <div class="button-container">
+                <div class="edit-account-button-container">
                     <!-- For Registering -->
-                    <button type="submit" class="btn btn-success" aria-label="Save Assessment">Edit Account</button>
+                    <button type="submit" class="edit-account-button">Edit Account</a></button>
+                    <!-- For Logging In -->
                 </div>
             </form>
         </div>

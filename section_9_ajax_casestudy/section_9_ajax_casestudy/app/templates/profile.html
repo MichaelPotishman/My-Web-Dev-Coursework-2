@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="profile-container">
+    <div class="upper-buttons">
+        <button class="left-button" onclick="history.back()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        {% if user.id == current_user.id %}
+        <div class="more-right-buttons">
+            <a href="{{ url_for('edit_user', user_id=current_user.id) }}" class="delete-button">
+                <button type="button" class="delete-button">
+                    <i class="fas fa-user-edit"></i>
+                </button>
+            </a>
+
+            <!-- LOGOUT MODAL (REF LATER) -->
+            <button class="delete-button" id="logout-open-modal-btn">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+
+            <!-- DELETE ACCOUNT MODAL -->
+            <button class="delete-button" id="open-modal-btn">
+                <i class="fas fa-user-times"></i>
+            </button>
+            
+        </div>
+        <div class="account-modal-container">
+            <div id="account-confirmation-modal" class="account-modal">
+                <h2>Are you sure you want to delete your account?</h2>
+                <p>This action cannot be undone.</p>
+                <div class="modal-buttons">
+                    <form action="{{ url_for('delete_account', user_id=current_user.id) }}" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button class="confirm-delete" type="submit">Yes, Delete</button>
+                    </form>
+                    <button class="cancel-delete" id="close-modal-btn">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="logout-modal-container">
+            <div id="logout-confirmation-modal" class="logout-modal">
+                <h2>Are you sure you want to log out?</h2>
+                <div class="modal-buttons">
+                    <form action="/logout" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button class="confirm-delete" type="submit">Log out</button>
+                    </form>
+                    <button class="cancel-delete" id="logout-close-modal-btn">Cancel</button>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+
+    <div class="user-profile-container">
+        <div class="user-profile-info">
+            <img src="{{ url_for('static', filename='uploads/' + (user.profile_picture if user.profile_picture else 'default.jpg')) }}"
+                 alt="Profile Picture" class="user-profile-img">
+        </div>
+        <h1>{{ user.username }}</h1>
+    </div>
+
+
+    <div class="profile-tabs">
+        <button id="posts-btn" class="tab-btn" data-username="{{ user.username }}">Posts</button>
+        <button id="likes-btn" class="tab-btn" data-username="{{ user.username }}">Likes</button>
+    </div>
+
+    <!-- AJAX  -->
+    <div id="content-area"></div>
+</div>
+
+
+
+
+
+
+{% endblock %}

@@ -32,7 +32,7 @@
                             <p class = "hashtag-title">Hashtags:</p>
                             {% for hashtag in all_hashtags.values() %}
                             <ul>
-                                <a href="{{ url_for('hashtag_profile', hashtag_name=hashtag.hashtag)}}"><li>{{ hashtag.hashtag }}</li></a>
+                                <a href="{{ url_for('hashtag_profile', hashtag_name=hashtag.hashtag)}}"><li class = "hashtag-search">{{ hashtag.hashtag }}</li></a>
                             </ul>
                             {% endfor %}
                         </div>
@@ -43,5 +43,8 @@
             </div>
         </div>
     </div>
+</div>
+<div class="post">
+    <a class='register-link' href="/post"><i class="fa fa-plus" aria-hidden="true"></i></a>
 </div>
 {% endblock %}

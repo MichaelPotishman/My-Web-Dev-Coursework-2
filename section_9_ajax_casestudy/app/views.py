@@ -103,7 +103,18 @@ def register():
     theme = request.cookies.get('theme')
     form = RegisterForm()
     if form.validate_on_submit():
-        # Handle registration logic
+        # checking if already username in database
+        existing_user = models.User.query.filter_by(username = form.username.data).first()
+        if existing_user:
+            flash("Username is already taken. Please choose another username", 'danger')
+            return render_template('register.html', form=form, min_birthday=min_age)
+        
+        # checking if email has @ sign
+        if '@' not in form.email.data:
+
+            flash("Email must be a valid email", 'danger')
+            return render_template('register.html', form=form, min_birthday=min_age)
+        
         profile_picture = request.files['profile_picture']
         
         if profile_picture.filename == '':
@@ -162,12 +173,13 @@ def feed():
 
 # search - only show the top part as the rest is done by AJAX so show only search bar IF there are posts at all
 @app.route('/search', methods=['GET'])
+@login_required
 def search_page():
     user_posts = models.Posts.query.join(models.User, models.Posts.user_id == models.User.id).join(models.PostHashtag, models.Posts.post_id == models.PostHashtag.post_id).join(models.Hashtags, models.PostHashtag.hashtag_id == models.Hashtags.id).order_by(models.Posts.post_id.desc()).all()
 
 
     all_users = db.session.query(models.User.id, models.User.username).all()
-    all_hashtags = db.session.query(models.Hashtags.id,models.Hashtags.name).all()
+    all_hashtags = db.session.query(models.Hashtags.id,models.Hashtags.name).distinct().all()
         
     user_dict = {}
     for user in all_users:
@@ -340,14 +352,15 @@ def vote():
 @login_required
 def delete_post(post_id):
     post = models.Posts.query.get(post_id)
-    hashtags_in_post = models.PostHashtag.query.join(models.Hashtags, models.PostHashtag.hashtag_id == models.Hashtags.id).filter(models.PostHashtag.post_id == post_id)
-    print(hashtags_in_post)
-    for hashtag_in_post in hashtags_in_post:
-        db.session.add(hashtag_in_post)
-        db.session.delete(hashtag_in_post)
-        
-        
-    print("Session state before commit:", db.session.dirty)
+    post_hashtags = models.PostHashtag.query.filter_by(post_id=post_id).all()
+    
+    for post_hashtag in post_hashtags:
+        hashtag = models.Hashtags.query.get(post_hashtag.hashtag_id)
+        db.session.delete(post_hashtag)
+
+        remaining_posts_with_hashtag = models.PostHashtag.query.filter_by(hashtag_id=hashtag.id).count()
+        if remaining_posts_with_hashtag == 0:
+            db.session.delete(hashtag)
 
     db.session.delete(post)
     db.session.commit()

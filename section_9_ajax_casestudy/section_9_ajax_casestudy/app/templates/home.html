@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+
+    <div class="col-10 col-sm-9 col-md-8 col-lg-7 col-xl-7 col-xxl-6">
+            <div class="form-container" >
+                <div class="login-box">
+                    <h2 class = "Login-title">Login</h2>
+                    <form action="" method="post" name="LoginForm" class = "login-form">
+                        {{ form.hidden_tag() }}
+    
+                        <div class="form-group">
+                            <label for="username"></label>
+                            {{ form.username(class="form-control", id="username", placeholder="Username") }}
+                            {% if form.username.errors %}
+                                <div class="alert alert-danger" role="alert">
+                                    {% for error in form.username.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+    
+                        <div class="form-group">
+                            <label for="password"></label>
+                            {{ form.password(class="form-control", id="password", placeholder = "Password") }}
+                            {% if form.password.errors %}
+                                <div class="alert alert-danger" role="alert">
+                                    {% for error in form.password.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+    
+                        <input type="hidden" name="action" id="action-field">
+    
+                        <!-- Submit Buttons -->
+                        <div class="button-container">
+                            <!-- For Registering -->
+                            <button type="submit" class="login-button">Log In</a></button>
+                            <!-- For Logging In -->
+                        </div>
+                        <div class="register-link-container">
+                            <p>Don't have an account? <a href = '/register' id="register">Register</a></p>
+                        </div>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+    </div>    
+</div>
+{% endblock %}

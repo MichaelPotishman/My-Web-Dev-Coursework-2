@@ -1,0 +1,486 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+label{
+    margin: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f3f4f6;
+    color: #1f2937;
+}
+
+
+
+/* Navbar */
+.navbar {
+    background-color: white;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.collapse{
+    display: flex;
+    justify-content: space-between;
+}
+
+.right-nav-buttons{
+    gap: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.navbar a, 
+.navbar button {
+    color: #4b5563;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.navbar a:hover, 
+.navbar button:hover {
+    color: #2563eb;
+}
+
+.navbar-brand{
+    font-style: italic;
+}
+
+.profile-img {
+    height: 2.5rem;
+    width: 2.5rem;
+    border-radius: 9999px;
+    object-fit: cover;
+    border: 2px solid #e5e7eb;
+}
+
+/* Home page */
+.form-container{
+    margin-top: 20px;
+    z-index: 1;
+    position: relative;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-box{
+    max-width: 250px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.login-title{
+    color: black;
+    margin-top: 30px;
+}
+
+.login-form{
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.login-button{
+    background: #fff;
+    color: black;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+.login-button:hover{
+    outline: 1px solid #fff;
+}
+
+/* Register page */
+.register-box{
+    max-width: 250px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.register-title{
+    color: black;
+    margin-top: 30px;
+}
+
+/* Search */
+.lists{
+    margin-top: 20px;
+    background-color: white;
+    border-radius: 25px;
+    justify-content: space-around;
+    padding: 10px;
+    display: flex;
+}
+
+
+input[type="text"] {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Post container */
+.post-container {
+    position: relative;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: white;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+    transition: transform 0.2s;
+    margin-bottom: 10px;
+}
+
+.post-container:hover {
+    transform: translateY(-2px);
+}
+
+.left-container{
+    width: 100%;
+}
+
+.username-container {
+
+    display: flex;
+    justify-content: space-between;
+    margin: -20px -20px 20px -20px; /* Changed this to handle all sides */
+    padding: 20px;
+}
+
+.content-container{
+    margin-bottom: 10px;
+    margin-top: -20px;
+}
+
+.username-right{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.username-right form{
+    display: inline-block;
+}
+
+
+/* Hashtags */
+.hashtag {
+    margin-top: 10px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    background-color: #dbeafe;
+    color: #1e40af;
+    border-radius: 9999px;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Like button */
+.vote {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6b7280;
+    transition: color 0.2s;
+}
+
+.vote:hover {
+    color: #2563eb;
+}
+
+/* Delete button and Edit button */
+.right-buttons {
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    color: #1f2937;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    transition: color 0.2s;
+}
+
+.more-right-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+
+.delete-button, a.delete-button{
+    color: #1f2937;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    transition: color 0.2s;
+    width: 60px;
+    height: 40px;
+}
+
+
+
+.left-button{
+    padding: 0.5rem, 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 40px;
+    color: #1f2937;
+    font-size: 0.875rem;
+    border-radius: 0.5rem;
+    transition: color 0.2s;
+}
+
+.left-button:hover{
+    color: #991b1b;
+}
+
+.right-buttons:hover, .delete-button:hover {
+    color: #991b1b;
+}
+
+
+
+/* Post button */
+.post {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    height: 75px;
+    width: 75px;
+    background-color: #2563eb;
+    color: white;
+    border-radius: 9999px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.post i{
+    color: white;
+}
+
+.post:hover {
+    transform: translateY(-2px);
+    background-color: #1d4ed8;
+}
+
+/* Profile */
+.upper-buttons {
+    flex-wrap: wrap;
+    margin-top: 10px;
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    padding: 0 20px;
+    margin-bottom: .5rem; 
+}
+
+.username-container{
+    display: flex;
+    align-items: center;
+}
+
+.username-left{
+    display: flex;
+    gap: 10px;
+}
+
+.username-title {
+    display: inline-block; 
+    line-height: 1; 
+    margin: 0;
+    padding: 0; 
+    align-self: center; 
+}
+
+
+.user-profile-container{
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: lightgrey;
+    border-radius: 25px;
+    gap: 10px;
+    border: 2px solid black;
+}
+
+.user-profile-container h2{
+    font-style: italic;
+    line-height: 0;
+}
+
+.user-profile-img{
+    height: 3rem;
+    width: 3rem;
+    border-radius: 9999px;
+    object-fit: cover;
+    border: 2px solid #e5e7eb;
+}
+
+
+
+.profile-tabs{
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    margin-right: 10px;
+    border: none;
+    background: #f0f0f0;
+    cursor: pointer;
+}
+
+.tab-btn.active {
+    background: #007bff;
+    color: white;
+}
+
+.post, .liked-post {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 10px;
+}
+
+/* POST DELETION MODAL */
+.post-container .modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%; 
+    height: min(60%, 150px);
+    max-width: 300px; 
+    background-color: red;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    z-index: 10;
+    display: none;
+}
+
+.modal-content{
+    width: 100%;
+    height: 100%;
+}
+.post-container .modal.active {
+    display: block; 
+
+}
+/* ACCOUNT DELETION MODAL + LOGOUT DELETION MODAL */
+.account-modal-container, .logout-modal-container{
+    width: 100%;
+    max-height: 0; /* SET TO 0 ON NON ACTIVE SO DOESNT SHOW UP */
+    overflow: hidden;
+    transition: max-height 0.3s ease out;
+}
+
+.account-modal-container.active, .logout-modal-container.active{
+    max-height: 500px;
+}
+
+.account-modal, .logout-modal {
+    position: relative; 
+    transform: none;
+    width: 100%; 
+    margin-top: 10px;
+    background-color: red;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    z-index: 1000;
+    display: none; 
+}
+
+.account-modal.active, .logout-modal{
+    display: block; /* WHEN SET TO ACTIVE SHOW ALL OF IT */
+}
+
+.account-modal .modal-buttons, .logout-modals .modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+
+.confirm-delete {
+    background-color: red;
+    color: white;
+}
+
+.cancel-delete {
+    background-color: gray;
+    color: white;
+}
+
+
+
+/* cookie  */
+#cookies{
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1;
+}
+
+.cookies{
+    min-height: 70px;
+}
+
+/* Dark mode styles */
+.dark-theme {
+    background-color: #1f2937;
+    color: #f3f4f6;
+}
