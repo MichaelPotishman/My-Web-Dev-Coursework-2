@@ -1,10 +1,10 @@
 from app import app, models, db
-from flask import render_template, flash, request, redirect
-from .forms import LoginForm, RegisterForm, PostForm
+from flask import render_template, flash, request, redirect, url_for
+from .forms import LoginForm, RegisterForm, PostForm, EditProfile, EditPost
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.utils import secure_filename
 from flask import request
-from sqlalchemy import func
+from datetime import datetime
 import json
 import os
 
@@ -52,6 +52,44 @@ def delete_account(user_id):
     db.session.commit()
     return redirect('/')
 
+@app.route('/edit_user/<int:user_id>', methods=['GET','POST'])
+@login_required
+def edit_user(user_id):
+    profile = models.User.query.get(user_id)
+    theme = request.cookies.get('theme')
+    form = EditProfile(obj=profile)
+    
+    if request.method == 'GET':
+        # For GET request, render the edit profile template
+        return render_template("edit_profile.html", form=form, user=profile)
+    
+    if form.validate_on_submit():
+        if not form.username.data or not form.password.data or not form.email.data:
+            flash("Username, Password and Email are required fields")
+            return render_template("edit_profile.html", form=form, user=profile)
+        
+        profile.username = form.username.data
+        profile.password = form.password.data
+        profile.email = form.email.data
+        
+        profile_picture = request.files['profile_picture']
+        if profile_picture.filename == '':
+            filename = profile.profile_picture or 'default.jpg'
+        elif profile_picture:
+            filename = secure_filename(profile_picture.filename)
+            profile_picture.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        else:
+            return "Invalid file type"
+        
+        profile.profile_picture = filename
+        flash("Successfully updated profile")
+        db.session.commit()
+        
+        return redirect(url_for('profile', user_id=user_id))
+
+    # If form validation fails
+    return render_template("edit_profile.html", form=form, user=profile.user_id, theme = theme)
+
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout():
@@ -60,6 +98,8 @@ def logout():
     
 @app.route('/register', methods=['GET','POST'])
 def register():
+    today = datetime.today().date()
+    min_age = today.replace(year = today.year - 16)
     theme = request.cookies.get('theme')
     form = RegisterForm()
     if form.validate_on_submit():
@@ -81,7 +121,7 @@ def register():
         flash(f"Hello {form.username.data}, you have been successfully registered!")
         return redirect('/')
 
-    return render_template('register.html', form=form, title="Login / Register", theme=theme)
+    return render_template('register.html', form=form, title="Login / Register", theme=theme, min_birthday = min_age)
 
 
 # FEED PAGE / SEARCH PAGE / SEARCH RESULTS PAGE / POST PAGE
@@ -101,6 +141,7 @@ def feed():
             image = post.image if post.image else ''
             
             posts_dict[post_id] = {'content' : post.content,
+                                   'post_id': post.post_id,
                                    'username': post.user.username,
                                    'hashtags': [],
                                    'upvotes': post.upvotes,
@@ -299,9 +340,17 @@ def vote():
 @login_required
 def delete_post(post_id):
     post = models.Posts.query.get(post_id)
-    if post:
-        db.session.delete(post)
-        db.session.commit()
+    hashtags_in_post = models.PostHashtag.query.join(models.Hashtags, models.PostHashtag.hashtag_id == models.Hashtags.id).filter(models.PostHashtag.post_id == post_id)
+    print(hashtags_in_post)
+    for hashtag_in_post in hashtags_in_post:
+        db.session.add(hashtag_in_post)
+        db.session.delete(hashtag_in_post)
+        
+        
+    print("Session state before commit:", db.session.dirty)
+
+    db.session.delete(post)
+    db.session.commit()
     return redirect('/feed')
 
 
@@ -310,22 +359,32 @@ def delete_post(post_id):
 @login_required
 def edit_post(post_id):
     theme = request.cookies.get('theme')
-    post = models.Posts.query.get(post_id)
-    form = PostForm(obj=post)
+    post_to_edit = models.Posts.query.get(post_id)
+    form = EditPost(obj=post_to_edit)
     if form.validate_on_submit():
-        if not form.content.data or not form.hashtags.data:
+        if not form.content.data:
             flash("Content and Hashtags are required fields")
-            return render_template('feed.html', theme=theme)
+            return render_template('edit.html', theme=theme)
+            
         
-        # place the data already in the database on the form so users can edit
-        post.content = form.content.data
-                
+        image = request.files['image_or_video']
+        
+        if image.filename == '':
+            filename = 'default.jpg'  # User did not upload a file
+        elif image:
+            filename = secure_filename(image.filename)
+            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        else:
+            return "Invalid file type"
+        
+        post_to_edit.content = form.content.data
+        post_to_edit.image = filename
+            
+            
+        db.session.commit() 
         flash("Successfully updated your post!")
-        db.session.commit()
-        return redirect('/feed')
 
-        
-    return render_template('edit.html', form=form, theme=theme)
+    return render_template('edit.html', form=form, post=post_to_edit, theme=theme)
 
 # ALL PROFILE ROUTES
 @app.route('/profile/<int:user_id>', methods=['GET','POST'])
@@ -350,20 +409,20 @@ def hashtag_profile(hashtag_name):
         post_id = post.post_id
         posts_dict[post_id] = {
             'content': post.content,
-            'username': post.user.username,
+            'username': post.user.username if post.user.username else '',
             'hashtags': [], 
             'upvotes': post.upvotes,
             'user_id': post.user_id,
             'image': image
         }
         
-    for hashtag in post.hashtags:
-            posts_dict[post_id]['hashtags'].append(hashtag.name)
-            
-    existing_like = models.Likes.query.filter_by(user_id=current_user.id, post_id=post_id).first()
-    if existing_like:
-        print("FOR POST :", post_id, "EXISTING LIKE: TRUE")
-    liked_posts[post_id] = bool(existing_like)
+        for hashtag in post.hashtags:
+                posts_dict[post_id]['hashtags'].append(hashtag.name)
+                
+        existing_like = models.Likes.query.filter_by(user_id=current_user.id, post_id=post_id).first()
+        if existing_like:
+            print("FOR POST :", post_id, "EXISTING LIKE: TRUE")
+        liked_posts[post_id] = bool(existing_like)
 
     theme = request.cookies.get('theme')
     return render_template('hashtag_profile.html', theme=theme, posts=posts_dict, liked_posts = liked_posts, hashtag=hashtag_name)

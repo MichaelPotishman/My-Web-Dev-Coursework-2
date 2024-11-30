@@ -17,13 +17,20 @@ class RegisterForm(FlaskForm):
     email = StringField('email', validators = [DataRequired()])
     date_of_birth =  DateField('deadline', validators=[DataRequired()])
     profile_picture = FileField('Profile Picture')
+    
+class EditProfile(FlaskForm):
+    username = StringField('username', validators = [DataRequired()])
+    password = StringField('password', validators = [DataRequired()])
+    email = StringField('email', validators = [DataRequired()])
+    profile_picture = FileField('Profile Picture')
 
     
-
 class PostForm(FlaskForm):
     content = TextAreaField('content', validators = [DataRequired()])
     image_or_video = FileField('image')
     hashtags = StringField('hashtags', validators=[DataRequired()])
 
 
-
+class EditPost(FlaskForm):
+    content = TextAreaField('content', validators = [DataRequired()])
+    image_or_video = FileField('image')

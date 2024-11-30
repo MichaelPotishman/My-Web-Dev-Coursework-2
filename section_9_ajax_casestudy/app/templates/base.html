@@ -24,34 +24,48 @@
       <!-- Define the navbar class, once its passed a small (sm) screen, it expands to full size-->
         <nav class="navbar navbar-expand-sm fixed-top" role="navigation">
           <div class="container-fluid">
-            <a class="navbar-brand" href="#">Assessments</a>
+            <a class="navbar-brand" href="#">Hashtag</a>
             <!-- 'data-target' links to the information the 'hamburger' should display -> same as the id for the data-->
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
        
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              {% if current_user.is_authenticated %}
+              <div class="left-nav-buttons">
+                {% if current_user.is_authenticated %}
                 <ul class="navbar-nav mr-auto">
                   <li class="nav-item"><a class="nav-link" href="/feed">Feed <span class="sr-only">(current)</span></a></li>
                   <li class="nav-item"><a class="nav-link" href="/search">Search</a></li>
                 </ul>
-              {% else %}
-              {% endif %}
-              <button id="theme-toggle" class="btn btn-outline-secondary ml-auto">
-                  {% if theme == 'dark' %}
-                    Switch to Light mode
-                  {% else %}
-                    Switch to Dark mode
-                  {% endif %}
-              </button>
-              {% if current_user.is_authenticated %}
-                {% if current_user.profile_picture %}
-                  <a href="{{ url_for('profile', user_id=current_user.id) }}"><img src="{{ url_for('static', filename='uploads/' + current_user.profile_picture) }}" alt="Profile Picture" class="profile-img"></a>
                 {% else %}
-                  <a href="{{ url_for('profile', user_id=current_user.id) }}"><img src="{{ url_for('static', filename='uploads/default.png') }}" alt="Default Profile Picture" class="profile-img"></a>
+              
                 {% endif %}
-              {% endif %}
+              </div>
+              
+              <div class="right-nav-buttons">
+                <ul class="navbar-nav mr-auto">
+                  <li class="nav-item"><button id="theme-toggle" class="btn btn-outline-secondary ml-auto">
+                    {% if theme == 'dark' %}
+                      Switch to Light mode
+                    {% else %}
+                      Switch to Dark mode
+                    {% endif %}
+                    </button></li>
+                  <li class="nav-item"><button id="manage-cookies" class="btn btn-outline-secondary ml-auto">Manage Cookies</i></button></li>
+                  <li>{% if current_user.is_authenticated %}
+                    {% if current_user.profile_picture %}
+                      <a href="{{ url_for('profile', user_id=current_user.id) }}"><img src="{{ url_for('static', filename='uploads/' + current_user.profile_picture) }}" alt="Profile Picture" class="profile-img"></a>
+                    {% else %}
+                      <a href="{{ url_for('profile', user_id=current_user.id) }}"><img src="{{ url_for('static', filename='uploads/default.png') }}" alt="Default Profile Picture" class="profile-img"></a>
+                    {% endif %}
+                  {% endif %}</li>
+                </ul>
+              </div>
+              
+              
+              
+              
+              
             </div>
           </div>
         </nav>
@@ -60,8 +74,8 @@
         <!-- If any flashed messages, loop through and flash them on the screen -->
         <div class="container-fluid-flash">
           <div class="row">
-            <div class="col-3"></div>
-              <div class="col-6" >
+            <div class="col-lg-3 col-md-2 col-sm-1"></div>
+              <div class="col-lg-6 col-md-8 col-sm-10 col-12">
                 {% with messages = get_flashed_messages() %}
                   {% if messages %}
                     {% for message in messages %}
@@ -81,8 +95,9 @@
           <div class="cookie-container">
             <div class="subcontainer">
               <div class="cookies">
-                <p>This website uses cookies to enhance user experiences. <a href="">Learn More.</a></p>
-                <button id="cookies-btn">Thats fine</button>
+                <p>This website uses mandatory cookies as well as optional cookies. Choose your preference<a href="">Learn More.</a></p>
+                <button id="all-cookies-btn">Accept all cookies</button>
+                <button id="mandatory-cookies-btn">Accept only mandatory cookies</button>
               </div>
             </div>
           </div>

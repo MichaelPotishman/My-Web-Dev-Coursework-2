@@ -1,76 +1,90 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="form-container">
-    <form action="" method="post" name="LoginForm" enctype="multipart/form-data">
-        {{ form.hidden_tag() }}
-
-        <div class="form-group">
-            <label for="username">Username:</label>
-            {{ form.username(class="form-control", id="username") }}
-            {% if form.username.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {% for error in form.username.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
-                </div>
-            {% endif %}
+<div class="row justify-content-center">
+    <div class="col-10 col-sm-9 col-md-8 col-lg-7 col-xl-7 col-xxl-6">
+        <div class="form-container">
+            <div class="register-box">
+                <h2 class = "register-title">Register</h2>
+                <form action="" method="post" name="LoginForm" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+            
+                    <div class="form-group">
+                        <label for="username"></label>
+                        {{ form.username(class="form-control", id="username", placeholder="Username") }}
+                        {% if form.username.errors %}
+                            <div class="alert alert-danger" role="alert">
+                                {% for error in form.username.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+            
+                    <div class="form-group">
+                        <label for="password"></label>
+                        {{ form.password(class="form-control", id="password", placeholder = "Password") }}
+                        {% if form.password.errors %}
+                            <div class="alert alert-danger" role="alert">
+                                {% for error in form.password.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+            
+                    <div class="form-group">
+                        <label for="password"></label>
+                        {{ form.email(class="form-control", id="email", placeholder="email") }}
+                        {% if form.email.errors %}
+                            <div class="alert alert-danger" role="alert">
+                                {% for error in form.email.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+            
+                    <div class="form-group">
+                        <label for="password"></label>
+                        {{ form.date_of_birth(class="form-control", id="date_of_birth", max=min_birthday.isoformat(), placeholder="Date of birth (Must be over 16)") }}
+                        {% if form.date_of_birth.errors %}
+                            <div class="alert alert-danger" role="alert">
+                                {% for error in form.date_of_birth.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+            
+                    <div class="form-group">
+                        <label for="profile_picture">Profile Picture:</label>
+                        {{ form.profile_picture(class="form-control", id="profile_picture",) }}
+                        {% if form.profile_picture.errors %}
+                            <div class="alert alert-danger" role="alert">
+                                {% for error in form.profile_picture.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+            
+            
+                    <!-- Submit Buttons -->
+                    <div class="button-container">
+                        <!-- For Registering -->
+                        <button type="submit" class="login-button">Register</a></button>
+                        <!-- For Logging In -->
+                    </div>
+                    <div class="register-link-container">
+                        <p>Back to <a href = '/' id="register">Login</a></p>
+                    </div>
+                </form>
+                </form>
+            </div>
+            
         </div>
-
-        <div class="form-group">
-            <label for="password">Password:</label>
-            {{ form.password(class="form-control", id="password") }}
-            {% if form.password.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {% for error in form.password.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="form-group">
-            <label for="password">Email:</label>
-            {{ form.email(class="form-control", id="email") }}
-            {% if form.email.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {% for error in form.email.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="form-group">
-            <label for="password">Date of birth:</label>
-            {{ form.date_of_birth(class="form-control", id="date_of_birth") }}
-            {% if form.date_of_birth.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {% for error in form.date_of_birth.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="form-group">
-            <label for="profile_picture">Profile Picture:</label>
-            {{ form.profile_picture(class="form-control", id="profile_picture") }}
-            {% if form.profile_picture.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {% for error in form.profile_picture.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
-
-
-        <!-- Submit Buttons -->
-        <div class="button-container">
-            <!-- For Registering -->
-            <button type="submit" class="btn btn-success" aria-label="Save Assessment">Sign Up</button>
-        </div>
-    </form>
+    </div>
 </div>
+
 {% endblock %}

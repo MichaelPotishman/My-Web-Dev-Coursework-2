@@ -13,6 +13,16 @@ $(document).ready(function() {
     });  
 
 
+    // $(document).on('click', '#post-open-modal-btn', function() {
+    //     $('#post-confirmation-modal').css('display', 'block');
+    // });
+
+    // $(document).on('click', '#post-close-modal-btn', function() {
+
+    //     $('#post-confirmation-modal').css('display', 'none');
+    // });
+
+
 
     $(document).on("click", "a.vote", function() {
         var clicked_obj = $(this);  
@@ -122,20 +132,3 @@ $(document).ready(function() {
 });
 
 
-    // $('#search_text').keyup(function(){
-    //     var search = $(this).val();
-        
-    //     if (search.trim() !== ''){
-    //         $.ajax({
-    //             url: "/livesearch",
-    //             method: "POST",
-    //             data: {query: search},
-    //             success: function(data) {
-    //                 $('.bottom-container').html(data);
-    //             }
-    //         });
-    //     } else {
-    //         // Reload all posts when search is empty
-    //         location.reload();
-    //     }
-    // });

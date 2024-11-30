@@ -21,11 +21,23 @@ function getCookie(name) {
 // Get the button accepting cookies, once clicked change the div with id cookies to have diplay none (remove it)
 // Then create a cookie called cookie-consent and set it to true and to expire in 30 days
 let pressed = false;
-document.querySelector('#cookies-btn').addEventListener('click', () => {
+document.querySelector('#all-cookies-btn').addEventListener('click', () => {
     pressed = true;
     console.log(pressed);
     document.querySelector('#cookies').style.display = 'none';
     setCookie("cookie-consent", true, 30);
+})
+
+document.querySelector('#mandatory-cookies-btn').addEventListener('click', () => {
+    pressed = true;
+    console.log(pressed);
+    document.querySelector('#cookies').style.display = 'none';
+    setCookie("cookie-consent", false, 30);
+})
+
+document.getElementById('manage-cookies').addEventListener('click', function () {
+    document.querySelector('#cookies').style.display = 'block';
+    setCookie("cookie-consent", false, 30);
 })
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -79,35 +91,53 @@ document.getElementById('theme-toggle').addEventListener('click', function () {
 
 document.addEventListener("DOMContentLoaded", function () {
     // POST DELETION!
-    // each post has its own opening modal, confirming delete and close modal button so get ALL OF THEM
-    const deleteButtons = document.querySelectorAll("#post-open-modal-btn");
-    const modals = document.querySelectorAll("#post-confirmation-modal");
-    const closeModalButtons = document.querySelectorAll("#post-close-modal-btn");
+    const deleteButtons = document.querySelectorAll('.right-buttons');
 
-    // loop through the amount of delete buttons, changing the style fo the modals to show/hide them
-    for (let i = 0; i < deleteButtons.length; i++) {
-        deleteButtons[i].onclick = function() {
-            modals[i].style.display = "flex";
-        };
+    for (let i = 0; i < deleteButtons.length; i++){
+        deleteButtons[i].addEventListener("click", function () {
+            const postID = deleteButtons[i].getAttribute("data-post-id");
 
-        closeModalButtons[i].onclick = function() {
-            modals[i].style.display = "none";
-        };
+            const modal = document.getElementById(`post-confirmation-modal-${postID}`);
+
+            if (modal){
+                modal.style.display = "block";
+            }
+        });
+
     }
+
+    const closeModalButtons = document.querySelectorAll('.cancel-delete');
+    
+    for (let i = 0; i < closeModalButtons.length; i++){
+        closeModalButtons[i].addEventListener("click", function () {
+            const postID = closeModalButtons[i].getAttribute("data-post-id");
+
+            const modal = document.getElementById(`post-confirmation-modal-${postID}`);
+
+            if (modal){
+                modal.style.display = "none";
+            }
+        });
+    }
+
 
     // Account Deletion Modal
     const accountDeleteBtn = document.getElementById("open-modal-btn");
     const accountModal = document.getElementById("account-confirmation-modal");
     const accountCloseBtn = document.getElementById("close-modal-btn");
 
+    const modalContainer = document.querySelector(".account-modal-container");
 
-    accountDeleteBtn.addEventListener("click", function() {
-        accountModal.style.display = "flex";
+
+    accountDeleteBtn.addEventListener("click", function () {
+        modalContainer.classList.add('active');
+        accountModal.classList.add('active');
     });
 
 
     accountCloseBtn.addEventListener("click", function() {
-        accountModal.style.display = "none";
+        modalContainer.classList.remove('active');
+        accountModal.classList.remove('active');
     });
 
     // Logout Modal
@@ -115,18 +145,20 @@ document.addEventListener("DOMContentLoaded", function () {
     const logoutModal = document.getElementById("logout-confirmation-modal");
     const logoutCloseBtn = document.getElementById("logout-close-modal-btn");
 
+    const logoutModalContainer = document.querySelector(".logout-modal-container");
+
 
     logoutBtn.addEventListener("click", function() {
-        logoutModal.style.display = "flex";
-
+        logoutModalContainer.classList.add('active');
+        logoutModal.classList.add('active');
     });
 
 
     logoutCloseBtn.addEventListener("click", function() {
-        logoutModal.style.display = "none";
+        logoutModalContainer.classList.remove('active');
+        logoutModal.classList.remove('active');
 
     });
 });
-
 
 

@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="profile-container">
-    <button onclick="history.back()">GO back</button>
+    <button class = "left-button" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
     <h1>#{{ hashtag }}'s Profile</h1> 
 
     {% include "posts_template.html" %}
