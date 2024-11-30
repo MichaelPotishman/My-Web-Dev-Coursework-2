@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-container">
+    <form action="" method="post" name="PostForm" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+
+        <div class="form-group">
+            <label for="username">Post:</label>
+            {{ form.content(class="form-control", id="content") }}
+            {% if form.content.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {% for error in form.content.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="password">Images/Videos</label>
+            {{ form.image_or_video(class="form-control", id="image_or_video") }}
+            {% if form.image_or_video.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {% for error in form.image_or_video.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="password">Hashtags:</label>
+            {{ form.hashtags(class="form-control", id="hashtags") }}
+            {% if form.hashtags.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {% for error in form.hashtags.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <input type="hidden" name="action" id="action-field">
+
+        <!-- Submit Buttons -->
+        <div class="button-container">
+            <!-- For Registering -->
+            <button type="submit" class="btn btn-success" aria-label="Save Assessment">Post</a></button>
+
+        </div>
+    </form>
+</div>
+{% endblock %}
