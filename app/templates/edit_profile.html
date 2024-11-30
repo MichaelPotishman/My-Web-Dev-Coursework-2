@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-10 col-sm-10 col-md-10 col-lg-10 col-xl-7 col-xxl-4">
+        <button class = "left-button" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+        <div class="edit-form-container">
+            <form action="" method="post" name="LoginForm" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    {{ form.username(class="form-control", id="username") }}
+                    {% if form.username.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for error in form.username.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    {{ form.password(class="form-control", id="password") }}
+                    {% if form.password.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for error in form.password.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Email:</label>
+                    {{ form.email(class="form-control", id="email") }}
+                    {% if form.email.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for error in form.email.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="profile_picture">Profile Picture:</label>
+                    {{ form.profile_picture(class="form-control", id="profile_picture") }}
+                    {% if form.profile_picture.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for error in form.profile_picture.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+
+                <!-- Submit Buttons -->
+                <div class="edit-account-button-container">
+                    <!-- For Registering -->
+                    <button type="submit" class="edit-account-button">Edit Account</a></button>
+                    <!-- For Logging In -->
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

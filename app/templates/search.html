@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-10 col-sm-10 col-md-10 col-lg-10 col-xl-10 col-xxl-7">
+        <div class="new-main">
+            <div class="choose-feed"></div>
+            <div class="main-content">
+                {% if posts|length == 0 %}
+                    No posts
+                {% else %}
+                    <div class="top-main">
+                        <input type="text" name="search_text" id="search_text" class="form-control" placeholder="Search hashtags">
+                    </div>
+                    <meta name="csrf-token" content="{{ csrf_token() }}">
+                    {% if not posts %}
+                        <div class="bottom-container">
+                            <p>No posts found</p>
+                        </div>
+                    {% else %}
+                    <div id = "result"></div>
+                    <div class="lists">
+                        <div class = "user-list">
+                            <p class = "user-title">Users:</p>
+                            {% for user in all_users.values() %}
+                            <ul>
+                                <a href = {{url_for('profile', user_id=user.user_id)}}><li>{{ user.username }}</li></a>
+                            </ul>
+                            {% endfor %}
+                        </div>
+                        <div class = "hashtag-list">
+                            <p class = "hashtag-title">Hashtags:</p>
+                            {% for hashtag in all_hashtags.values() %}
+                            <ul>
+                                <a href="{{ url_for('hashtag_profile', hashtag_name=hashtag.hashtag)}}"><li class = "hashtag-search">{{ hashtag.hashtag }}</li></a>
+                            </ul>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="post">
+    <a class='register-link' href="/post"><i class="fa fa-plus" aria-hidden="true"></i></a>
+</div>
+{% endblock %}
