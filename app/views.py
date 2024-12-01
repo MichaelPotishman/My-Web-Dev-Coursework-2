@@ -7,6 +7,7 @@ from flask import request
 from datetime import datetime
 import json
 import os
+import os
 
 UPLOAD_FOLDER = 'app/static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
